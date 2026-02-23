@@ -94,6 +94,7 @@ def view_duration_ms(event_type, placement):
 
 users = [f"user_{i}" for i in range(N_USERS)]
 events = []
+creatives = []
 
 for user_id in users:
     # how many days the users stays active. Most users churn quickly;
@@ -117,6 +118,7 @@ for user_id in users:
             for _ in range(events_in_session):
 
                 creative = generate_ad_creative()
+                creatives.append(creative)  # for creative dim table
 
                 # ----------------------------
                 # Impression
@@ -225,3 +227,7 @@ df = pd.DataFrame(events)
 df.to_csv("ad_events.csv", index=False)
 
 print(f"Generated {len(df):,} ad events")
+
+df_creatives = pd.DataFrame(creatives)
+df_creatives.to_csv("ad_creatives.csv", index=False)
+print(f"Generated {len(df_creatives):,} ad creatives")
