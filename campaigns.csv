@@ -1,0 +1,21 @@
+campaign_id,advertiser_id,campaign_name,objective,bid_strategy,start_date,end_date,daily_budget_usd,total_budget_usd,created_at,updated_at
+camp_1,adv_2,Sharable bifurcated algorithm,awareness,CPM,2025-01-05,2025-02-03,5968.66,173091.14,2025-01-05,2025-02-03
+camp_2,adv_2,User-centric even-keeled encryption,consideration,CPC,2025-02-08,2025-02-27,14967.07,284374.33,2025-02-08,2025-02-27
+camp_3,adv_1,Face-to-face client-driven support,awareness,CPM,2024-12-28,2025-01-25,12881.2,360673.6,2024-12-28,2025-01-25
+camp_4,adv_1,Customer-focused systematic support,consideration,CPC,2025-02-22,2025-04-21,13851.07,803362.06,2025-02-22,2025-04-21
+camp_5,adv_4,Quality-focused background parallelism,consideration,CPC,2025-01-05,2025-01-19,19090.78,267270.92,2025-01-05,2025-01-19
+camp_6,adv_3,Optimized 5thgeneration algorithm,consideration,CPC,2025-01-13,2025-02-13,4309.25,133586.75,2025-01-13,2025-02-13
+camp_7,adv_6,Cross-group didactic emulation,awareness,CPM,2025-01-18,2025-02-07,9294.99,185899.8,2025-01-18,2025-02-07
+camp_8,adv_6,Profit-focused real-time algorithm,consideration,CPC,2024-12-06,2025-02-04,11755.91,705354.6,2024-12-06,2025-02-04
+camp_9,adv_2,Realigned dedicated structure,conversion,CPA,2025-01-18,2025-02-06,14025.0,266475.0,2025-01-18,2025-02-06
+camp_10,adv_10,Streamlined tangible moratorium,conversion,CPA,2025-01-16,2025-03-07,5211.07,260553.5,2025-01-16,2025-03-07
+camp_11,adv_2,Operative directional knowledge user,awareness,CPM,2024-12-30,2025-01-31,24637.93,788413.76,2024-12-30,2025-01-31
+camp_12,adv_4,Reverse-engineered even-keeled workforce,conversion,CPA,2025-01-18,2025-02-18,11608.55,359865.05,2025-01-18,2025-02-18
+camp_13,adv_6,Adaptive well-modulated workforce,awareness,CPM,2025-01-15,2025-02-11,16919.29,456820.83,2025-01-15,2025-02-11
+camp_14,adv_2,Diverse tangible interface,consideration,CPC,2024-12-22,2025-02-08,18363.61,881453.28,2024-12-22,2025-02-08
+camp_15,adv_3,Mandatory even-keeled collaboration,consideration,CPC,2025-01-04,2025-02-27,17359.97,937438.38,2025-01-04,2025-02-27
+camp_16,adv_4,Extended well-modulated Graphical User Interface,consideration,CPC,2024-12-08,2025-01-05,20634.16,577756.48,2024-12-08,2025-01-05
+camp_17,adv_6,Customer-focused background implementation,consideration,CPC,2024-12-09,2025-01-05,22871.84,617539.68,2024-12-09,2025-01-05
+camp_18,adv_10,Cross-platform heuristic hardware,conversion,CPA,2025-01-10,2025-02-06,16558.25,447072.75,2025-01-10,2025-02-06
+camp_19,adv_7,Robust empowering workforce,conversion,CPA,2025-02-21,2025-04-05,4000.35,172015.05,2025-02-21,2025-04-05
+camp_20,adv_3,Balanced upward-trending knowledgebase,awareness,CPM,2025-02-10,2025-03-30,6937.17,332984.16,2025-02-10,2025-03-30
