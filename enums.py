@@ -93,3 +93,21 @@ GENRES = [
     "Animation",
     "Fantasy",
 ]
+
+# =========================================================
+# CTV AD FORMATS & CREATIVE TYPES
+# =========================================================
+
+AD_FORMATS = {
+    "video": {"durations_sec": [15, 30, 45, 60], "base_cpm": 35.0},
+    "bumper": {"durations_sec": [6], "base_cpm": 25.0},
+    "pause_display": {"durations_sec": [0], "base_cpm": 18.0},
+    "ui_sponsorship": {"durations_sec": [0], "base_cpm": 22.0},
+}
+
+CREATIVE_TYPES = {
+    "standard_video": {"click_boost": 1.0},
+    "interactive_qr": {"click_boost": 1.6},
+    "brand_slate": {"click_boost": 0.6},
+    "sponsored_title_card": {"click_boost": 1.2},
+}

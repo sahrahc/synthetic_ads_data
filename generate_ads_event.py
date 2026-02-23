@@ -18,6 +18,8 @@ from enums import (
     GEO_HIERARCHY,
 )
 
+from generate_ad_creative import generate_ad_creative
+
 # =========================================================
 # 1. STABLE RANDOMNESS (deterministic runs)
 # for regression testing and reproducible dashboards,
@@ -40,6 +42,7 @@ START_DATE = datetime(2026, 1, 1)
 
 BASE_IMPRESSION_TO_CLICK = 0.09
 BASE_CLICK_TO_CONVERSION = 0.01
+BASE_VIEW_TO_CONVERSION = 0.001  # 1 conversion per 1K impressions without a click
 
 AVG_SESSIONS_PER_DAY = 1.3
 AVG_EVENTS_PER_SESSION = 4
@@ -112,98 +115,107 @@ for user_id in users:
             events_in_session = max(1, int(random.gauss(AVG_EVENTS_PER_SESSION, 1)))
 
             for _ in range(events_in_session):
-                event_ts = session_start + timedelta(seconds=random.randint(0, 600))
+
+                creative = generate_ad_creative()
 
                 # ----------------------------
                 # Impression
                 # ----------------------------
-                events.append(
-                    {
-                        "event_id": fake.uuid4(),
-                        "session_id": session_id,
-                        "user_id": user_id,
-                        "ad_id": f"ad_{random.randint(1, 200)}",
-                        "campaign_id": f"camp_{random.randint(1, 20)}",
-                        "event_type": "impression",
-                        "event_timestamp": event_ts,
-                        "device_type": device_type,
-                        "os": os,
-                        "country": country,
-                        "region": region,
-                        "city": city,
-                        "surface": placement["surface"],
-                        "placement": placement["placement"],
-                        "position": placement["position"],
-                        "revenue_usd": 0.0,
-                        "cost_usd": round(random.uniform(0.001, 0.02), 4),
-                        "view_duration_ms": view_duration_ms("impression", placement),
-                        "is_billable": True,
-                    }
-                )
+                impression_id = fake.uuid4()
+                event_ts = session_start + timedelta(seconds=random.randint(0, 600))
+
+                # reset click flag for each impression
+                click_happened = False
+
+                impression_event = {
+                    "event_id": impression_id,
+                    "session_id": session_id,
+                    "user_id": user_id,
+                    "ad_id": creative["ad_id"],
+                    "ad_format": creative["ad_format"],
+                    "creative_type": creative["creative_type"],
+                    "campaign_id": f"camp_{random.randint(1, 20)}",
+                    "event_type": "impression",
+                    "event_timestamp": event_ts,
+                    "device_type": device_type,
+                    "os": os,
+                    "country": country,
+                    "region": region,
+                    "city": city,
+                    "surface": placement["surface"],
+                    "placement": placement["placement"],
+                    "position": placement["position"],
+                    "revenue_usd": creative["base_cpm_usd"] / 1000,
+                    "cost_usd": creative["base_cpm_usd"] / 1000,
+                    "view_duration_ms": view_duration_ms("impression", placement),
+                    "is_billable": True,
+                    # other fields are null for impressions vs clicks vs conversions
+                    "impression_id": impression_id,
+                    "click_id": None,
+                    "attribution_type": None,
+                }
+
+                events.append(impression_event)
 
                 # ----------------------------
                 # Click
                 # ----------------------------
-                if (
-                    random.random()
-                    < BASE_IMPRESSION_TO_CLICK * placement["click_boost"]
-                ):
-                    events.append(
-                        {
-                            "event_id": fake.uuid4(),
-                            "session_id": session_id,
-                            "user_id": user_id,
-                            "ad_id": f"ad_{random.randint(1, 200)}",
-                            "campaign_id": f"camp_{random.randint(1, 20)}",
-                            "event_type": "click",
-                            "event_timestamp": event_ts,
-                            "device_type": device_type,
-                            "os": os,
-                            "country": country,
-                            "region": region,
-                            "city": city,
-                            "surface": placement["surface"],
-                            "placement": placement["placement"],
-                            "position": placement["position"],
-                            "revenue_usd": 0.0,
-                            "cost_usd": round(random.uniform(0.05, 0.50), 2),
-                            "view_duration_ms": view_duration_ms("click", placement),
-                            "is_billable": True,
-                        }
-                    )
+                click_probability = (
+                    BASE_IMPRESSION_TO_CLICK
+                    * placement["click_boost"]
+                    * creative["click_boost"]
+                )
 
-                    # ----------------------------
-                    # Conversion
-                    # ----------------------------
-                    if random.random() < BASE_CLICK_TO_CONVERSION:
-                        revenue = round(random.uniform(5, 150), 2)
-                        events.append(
-                            {
-                                "event_id": fake.uuid4(),
-                                "session_id": session_id,
-                                "user_id": user_id,
-                                "ad_id": f"ad_{random.randint(1, 200)}",
-                                "campaign_id": f"camp_{random.randint(1, 20)}",
-                                "event_type": "conversion",
-                                "event_timestamp": event_ts,
-                                "device_type": device_type,
-                                "os": os,
-                                "country": country,
-                                "region": region,
-                                "city": city,
-                                "surface": placement["surface"],
-                                "placement": placement["placement"],
-                                "position": placement["position"],
-                                "revenue_usd": revenue,
-                                "cost_usd": round(
-                                    revenue * random.uniform(0.2, 0.6), 2
-                                ),
-                                "view_duration_ms": view_duration_ms(
-                                    "conversion", placement
-                                ),
-                                "is_billable": True,
-                            }
-                        )
+                if random.random() < click_probability:
+                    click_happened = True
+                    click_id = fake.uuid4()
+                    click_ts = event_ts + timedelta(seconds=random.randint(1, 15))
+                    click_event = {
+                        **impression_event,
+                        # override impression fields for click event
+                        "event_id": click_id,
+                        "event_type": "click",
+                        "event_timestamp": click_ts,
+                        "revenue_usd": 0.0,
+                        "cost_usd": round(random.uniform(0.05, 0.50), 2),
+                        # other fields are null for impressions vs clicks vs conversions
+                        "impression_id": impression_id,
+                        "click_id": None,
+                        "attribution_type": "click_through",
+                    }
+
+                    events.append(click_event)
+
+                # ----------------------------
+                # Conversion - either click-through or view-through
+                # ----------------------------
+                conversion_probability = (
+                    BASE_CLICK_TO_CONVERSION
+                    if click_happened
+                    else BASE_VIEW_TO_CONVERSION
+                )
+
+                if random.random() < conversion_probability:
+                    conversion_id = fake.uuid4()
+                    conversion_ts = (
+                        click_ts if click_happened else event_ts
+                    ) + timedelta(minutes=random.randint(1, 60))
+
+                    conversion_event = {
+                        **impression_event,
+                        "event_id": conversion_id,
+                        "event_type": "conversion",
+                        "event_timestamp": conversion_ts,
+                        "revenue_usd": round(random.uniform(5, 150), 2),
+                        "cost_usd": 0.0,
+                        "impression_id": impression_id,
+                        "click_id": click_id if click_happened else None,
+                        "attribution_type": (
+                            "click_through" if click_happened else "view_through"
+                        ),
+                    }
+
+                    events.append(conversion_event)
 
 # =========================================================
 # WRITE OUTPUT
